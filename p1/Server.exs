@@ -1,3 +1,4 @@
+Code.require_file("#{__DIR__}/primos.exs")
 #Code.require_file("#{__DIR__}/Nodo.exs")
 
 defmodule Server do
@@ -49,10 +50,13 @@ defmodule Server do
     IO.puts "Escuchando..."
     receive do
       {:saludo, msg} -> IO.puts "I got a message! #{inspect msg}"
-      {:primo, a}  -> Primes.is_prime(a) 
+      {:primo, a}  -> Node.spawn(self(), fn -> Primes.is_prime(a) end ) 
+      {:prime, a} when is_integer(a) -> IO.puts "calculando numero #{a}" 
       {:calcular, a} when is_integer(a) -> IO.puts "calculando numero #{a}" 
       {:calcular, a} when is_tuple(a)-> IO.inspect "calculando tupla #{a}" 
-      
+
+
+      #{:prime, pid} -> 
     end
   end
 
@@ -66,3 +70,6 @@ end
 # iex --sname name@ip --cookie word
 # Node.connect :name2@ip
 # Process.register self(), :name@ip
+#
+# Node.spawn(:"server@Jupiter", fn -> Primes.is_prime(4) end ) 
+#

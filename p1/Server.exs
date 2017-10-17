@@ -51,8 +51,10 @@ defmodule Server do
     receive do
       {:saludo, msg} -> IO.puts "I got a message! #{inspect msg}"
       {:primo, a}  -> Node.spawn(self(), fn -> Primes.is_prime(a) end ) 
-      {:prime, a} when is_integer(a) -> IO.puts "calculando numero #{a}" 
-      {:calcular, a} when is_integer(a) -> IO.puts "calculando numero #{a}" 
+      {:prime, a} when is_integer(a) -> IO.puts "calculando numero #{a}"
+      {:calcular, a} when is_integer(a) ->
+        IO.puts "calculando numero #{a}..."
+        send({:worker, :"worker@192.168.45.17"}, {:resultado,Primes.is_prime(a)})
       {:calcular, a} when is_tuple(a)-> IO.inspect "calculando tupla #{a}" 
 
 

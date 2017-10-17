@@ -21,8 +21,7 @@ defmodule Worker do
     send({:server, :"server@Jupiter"}, {:rango,min, max})
     IO.puts "Esperando respuesta..."
     receive do
-      {:resultado, true} -> IO.puts "Es primo!"
-      {:resultado, false} -> IO.puts "No es primo :("
+      {:resultado, range} -> IO.inspect "#{range}" 
     end
   end
 

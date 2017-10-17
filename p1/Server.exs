@@ -43,12 +43,11 @@ defmodule Server do
     IO.puts "Escuchando..."
     receive do
       {:saludo, msg} -> IO.puts "I got a message! #{inspect msg}"
-      #{:primo, a}  -> Node.spawn(self(), fn -> Primes.is_prime(a) end ) 
-      #{:prime, a} when is_integer(a) -> IO.puts "calculando numero #{a}"
+      
       {:calcular, a} when is_integer(a) ->
         IO.puts "calculando numero #{a}..."
         send({:worker1, :"worker1@Jupiter"}, {:resultado,Primes.is_prime(a)})
-      #{:calcular, a} when is_tuple(a)-> IO.inspect "calculando tupla #{a}" 
+      
       {:rango, min, max} when is_integer(min) ->
         IO.puts "rango #{min} - #{max}..."
         send({:worker1, :"worker1@Jupiter"}, {:resultado,Primes.find_primes({min, max})})

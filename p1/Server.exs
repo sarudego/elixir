@@ -46,11 +46,11 @@ defmodule Server do
       
       {pid, {:calcular, a} } when is_integer(a) ->
         IO.puts "calculando numero #{a}..."
-        send(pid, {:resultado,Primes.is_prime(a)})
+        spawn(fn -> send(pid, {:resultado,Primes.is_prime(a)}) end)
       
       {pid, {:rango, min, max} } when is_integer(min) ->
         IO.puts "rango #{min} - #{max}..." 
-        send(pid, {:resultado,Primes.find_primes({min, max})})
+        spawn(fn -> send(pid, {:resultado,Primes.find_primes({min, max})}) end)
     end
     loop()
   end

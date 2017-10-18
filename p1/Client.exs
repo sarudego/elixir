@@ -1,4 +1,4 @@
-defmodule Worker do
+defmodule Client do
   
   #def start(host, nombre, fichero_programa_cargar) do
     #System.cmd("ssh", [host,

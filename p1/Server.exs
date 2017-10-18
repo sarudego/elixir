@@ -42,16 +42,17 @@ defmodule Server do
   def loop do
     IO.puts "Escuchando..."
     receive do
-      {:saludo, msg} -> IO.puts "I got a message! #{inspect msg}"
+      {pid, {:saludo, msg} } -> IO.puts "I got a message! #{inspect msg}"
       
-      {:calcular, a} when is_integer(a) ->
+      {pid, {:calcular, a} } when is_integer(a) ->
         IO.puts "calculando numero #{a}..."
-        send({:worker1, :"worker1@Jupiter"}, {:resultado,Primes.is_prime(a)})
+        send(pid, {:resultado,Primes.is_prime(a)})
       
-      {:rango, min, max} when is_integer(min) ->
-        IO.puts "rango #{min} - #{max}..."
-        send({:worker1, :"worker1@Jupiter"}, {:resultado,Primes.find_primes({min, max})})
+      {pid, {:rango, min, max} } when is_integer(min) ->
+        IO.puts "rango #{min} - #{max}..." 
+        send(pid, {:resultado,Primes.find_primes({min, max})})
     end
+    loop()
   end
 
   def initListen do

@@ -9,7 +9,7 @@ defmodule Worker do
   #end
   
   def enviar(a) do
-    send({:server, :"server@Jupiter"}, {:calcular,a})
+    send({:server, :"server@192.168.45.17"}, {self(), {:calcular,a} })
     IO.puts "Esperando respuesta..."
     receive do
       {:resultado, true} -> IO.puts "Es primo!"
@@ -18,7 +18,7 @@ defmodule Worker do
   end 
 
   def rango(min, max) do
-    send({:server, :"server@Jupiter"}, {:rango,min, max})
+    send({:server, :"server@192.168.45.17"}, {self(), {:rango,min, max} })
     IO.puts "Esperando respuesta..."
     receive do
       {:resultado, range} -> IO.inspect "#{range}" 
@@ -26,7 +26,7 @@ defmodule Worker do
   end
 
   def saludo(msg) do
-    send({:server, :"server@Jupiter"}, {:saludo,msg})
+    send({:server, :"server@192.168.45.17"}, {self(), {:saludo,msg} })
   end 
 
 end

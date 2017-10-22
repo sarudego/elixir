@@ -1,6 +1,11 @@
 defmodule Master do
   @host1 "127.0.0.1"
-  
+  @numWorkers 3
+
+  def timestamp do
+    :os.system_time(:milli_seconds)  
+  end
+
   def assign([{worker_pid, task} | tail]) do
     send(worker_pid, {:calcular, {self(), task}}) 
     IO.puts "#{inspect tail}"
@@ -28,10 +33,19 @@ defmodule Master do
 
   def init(min, max) do
     #Divisón del rango en tres trozos
-    slice = div max, 3
+    slice = div max,"#{@numWorkers}" 
     assign([{{:worker1, :"worker1@#{@host1}"}, {min, slice}},
-            {{:worker2, :"worker2@#{@host1}"}, {slice + 1, slice * 2 + 1}},
-            {{:worker3, :"worker3@#{@host1}"}, {slice * 2 + 2, max}}])
+            {{:worker2, :"worker2@#{@host1}"}, {slice + 1, slice * 2}},
+            {{:worker3, :"worker3@#{@host1}"}, {slice * 2 + 1, max}}])
     collect([])
   end
+  
+  def initH(min, max) do
+    #Divisón del rango en tres trozos
+    slice = div max, 3
+    assign([{{:worker1, :"worker1@#{@host1}"}, {min, slice}},
+            {{:worker2, :"worker2@#{@host1}"}, {slice + 1, slice * 2}},
+            {{:worker3, :"worker3@#{@host1}"}, {slice * 2 + 1, max}}])
+    collect([])
+  end  
 end

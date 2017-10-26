@@ -1,3 +1,15 @@
+# AUTORES: Roberto Claver Ubiergo / Samuel Ruiz de Gopegui Muñoz 
+# NIAs: 720100 / 685127
+# FICHERO: Master.exs
+# FECHA: 26/10/17
+# TIEMPO: 7 + 9  = 16 horas de trabajo conjunto
+# DESCRIPCI'ON: fichero Elixir que contiene las funciones para la práctica 1 de Sistemas Distribuidos. Master - Worker
+# 	Deben estar los nodos configurados y los archivos cargados
+# 	Es necesario ejecutar los nodos con  "iex --name nombre@IP  -- cookie palabra"		
+
+Code.load_file("primos.exs")
+
+
 defmodule Master do
   @host1 "127.0.0.1"
 
@@ -14,11 +26,9 @@ defmodule Master do
 
   defp assign([{worker_pid, task} | tail]) do
     send(worker_pid, {:calcular, {self(), task}}) 
-    IO.puts "#{inspect tail}"
     if length(tail) != 0 do
       assign(tail)
     end
-    IO.puts "fin assign"
   end
 
   defp collect(results) do
@@ -26,9 +36,7 @@ defmodule Master do
       {:resultado, result} -> IO.inspect "#{result}"
                               result
     end
-    #IO.inspect "#{results}"
     if length(results) < 2 do
-      #IO.puts "vuelta...."
       collect([results | new_result])
     else
       results = results ++ new_result
@@ -49,8 +57,7 @@ defmodule Master do
 end
 
 
-defmodule Heterogeneous do
-
+defmodule Heter do
   @host1 "127.0.0.1"
 
   defp timestamp do
@@ -60,9 +67,8 @@ defmodule Heterogeneous do
   
   defp assign(names, workers, task, pos) do
     if (pos != 11) do
-      send({Enum.at(names,rem(pos+1,3)),Enum.at(workers,pos+1)}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
+      send({Enum.at(names,rem(pos+1,3)),Enum.at(workers,rem(pos+1,3))}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
       pos = pos + 1
-      IO.puts "vuelta #{pos}"
       assign(names, workers, task, pos)
     end
 
@@ -81,15 +87,15 @@ defmodule Heterogeneous do
   end  
 
   defp collect(results,pos) do
-    IO.puts "collect"
+    IO.puts "Estoy esperando..."
     new_result = receive do
+      #{:resultado, result} -> IO.puts "Recibido #{pos}"
       {:resultado, result} -> IO.inspect "#{result}"
-                              result
+      #{:resultado, result} -> IO.puts List.to_string(result)
+                              #result
     end
-    IO.puts "vuelta... y otra vuelta"
-    #IO.inspect "#{results}"
-    #if length(results) < 11 do
-    if pos < 11 do
+    #IO.puts "vuelta... y otra vuelta #{pos}"
+    if pos < 9 do
       pos = pos + 1
       collect([results | new_result],pos)
     else

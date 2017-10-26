@@ -3,6 +3,9 @@ defmodule Worker do
     loop()
   end
 
+  defp parar do
+    IO.puts "Worker parado"
+  end
   def initListenH do
     loopH()
   end
@@ -16,11 +19,15 @@ defmodule Worker do
     result = receive do
       {:calcular, {master_pid, {min, max}}} ->
         IO.puts "Calculando primos desde #{min} hasta #{max}."
-        before = timestamp
+        time_before = timestamp
         send(master_pid, {:resultado, Primes.find_primes({min, max})})
-        #after = timestamp - before
-        #IO.puts "#{after} milisegundos "
+        time_after = timestamp - time_before
+        IO.puts "#{time_after} milisegundos "
     end
+    receive do
+      {:parar} ->
+        parar
+    end 
     loop()
   end
 
@@ -31,7 +38,7 @@ defmodule Worker do
         IO.puts "Calculando primos desde #{min} hasta #{max}."
         if :rand.uniform(100)>60, do: Process.sleep(round(:rand.uniform(100)/100*2000))
         time_before = timestamp
-        IO.puts(to_string( timestamp ) ++ " Enviando")
+        IO.puts("Sending #{time_before}")
         send(master_pid, {:resultado, Primes.find_primes({min, max})})
         time_after = timestamp - time_before
         IO.puts "Cost in time... #{time_after}"  

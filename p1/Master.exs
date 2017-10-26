@@ -52,17 +52,13 @@ defmodule Heterogeneous do
   end
 
   
-  defp assign(workers, task, pos) do
-    IO.puts "entra assign"
+  defp assign(names, workers, task, pos) do
     if (pos != 11) do
-      IO.puts "entra if"
-      IO.inspect "#{workers}"
-      IO.inspect List.to_string(task)
-      send(Enum.at(workers,pos+2), {:calcular, {self(), Enum.at(task,pos+1)}}) 
+      send({Enum.at(names,pos+1),Enum.at(workers,pos+1)}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
       pos = pos + 1
-      assign(workers, task, pos)
+      assign(names, workers, task, pos)
     end
-    IO.puts "sale assign"
+
   end
 
   def init() do
@@ -71,10 +67,10 @@ defmodule Heterogeneous do
             {60000,69999}, {70000,79999}, {80000,89999}, 
             {90000,100000} 
            ] 
-    workers = ["worker1@#{@host1}", "worker2@#{@host1}", "worker3@#{@host1}"]
-
+    workers = [:"worker1@#{@host1}", :"worker2@#{@host1}", :"worker3@#{@host1}"]
+    names = [:worker1, :worker2, :worker3]
     IO.puts "llamada assign"
-    assign(workers, task, -1)
+    assign(names, workers, task, -1)
 
     IO.puts "collect"
     collect([])

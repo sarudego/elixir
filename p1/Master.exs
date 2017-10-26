@@ -51,14 +51,21 @@ defmodule Heterogeneous do
     :os.system_time(:milli_seconds)  
   end
 
-  def assign([worker_pid | workersTail],[task | taskTail], listWorkers) do
-    if (length(workersTail) == 0) do
-      #[worker_pid | workersTail ] = listWorkers 
-      #worker_pid = [listWorkers]
-    end  
-    send(worker_pid, {:calcular, {self(), task}}) 
-    if length(workersTail != 0) do 
-      assign(workersTail, taskTail,listWorkers)
+ # def assign([worker_pid | workersTail],[task | taskTail], listWorkers) do
+    #if (length(workersTail) == 0) do
+      ##[worker_pid | workersTail ] = listWorkers 
+      ##worker_pid = [listWorkers]
+    #end  
+    #send(worker_pid, {:calcular, {self(), task}}) 
+    #if length(workersTail != 0) do 
+      #assign(workersTail, taskTail,listWorkers)
+    #end
+  #end
+  
+  def assign(workers, task, pos) do
+    if length(pos != 11) do
+      send(Enum.at(workers,pos+1), {:calcular, {self(), Enum.at(task,pos+1)}}) 
+      assign(workers, task, pos)
     end
   end
 
@@ -70,7 +77,7 @@ defmodule Heterogeneous do
            ] 
     workers = ["worker1", "worker2", "worker3"]
 
-    assign(workers, task, workers)
+    assign(workers, task, -1)
 
     collect([])
   end  

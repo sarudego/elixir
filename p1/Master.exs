@@ -1,6 +1,12 @@
 defmodule Master do
   @host1 "127.0.0.1"
-  @numWorkers 3
+
+  def registerAndConnect() do
+    Process.register self(), :server
+    Node.connect :"worker1@#{@host1}"
+    Node.connect :"worker2@#{@host1}"
+    Node.connect :"worker3@#{@host1}"
+  end
 
   defp timestamp do
     :os.system_time(:milli_seconds)  
@@ -54,8 +60,9 @@ defmodule Heterogeneous do
   
   defp assign(names, workers, task, pos) do
     if (pos != 11) do
-      send({Enum.at(names,pos+1),Enum.at(workers,pos+1)}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
+      send({Enum.at(names,rem(pos+1,3)),Enum.at(workers,pos+1)}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
       pos = pos + 1
+      IO.puts "vuelta #{pos}"
       assign(names, workers, task, pos)
     end
 
@@ -69,33 +76,27 @@ defmodule Heterogeneous do
            ] 
     workers = [:"worker1@#{@host1}", :"worker2@#{@host1}", :"worker3@#{@host1}"]
     names = [:worker1, :worker2, :worker3]
-    IO.puts "llamada assign"
     assign(names, workers, task, -1)
-
-    IO.puts "collect"
-    collect([])
+    collect([], 0)
   end  
 
-  defp collect(results) do
+  defp collect(results,pos) do
+    IO.puts "collect"
     new_result = receive do
       {:resultado, result} -> IO.inspect "#{result}"
                               result
     end
-    IO.inspect "#{results}"
-    if length(results) < 2 do
-      IO.puts "vuelta...."
-      collect([results | new_result])
+    IO.puts "vuelta... y otra vuelta"
+    #IO.inspect "#{results}"
+    #if length(results) < 11 do
+    if pos < 11 do
+      pos = pos + 1
+      collect([results | new_result],pos)
     else
       results = results ++ new_result
       IO.inspect "#{results}"
     end
   end
 
-  def registerAndConnect() do
-    Process.register self(), :server
-    Node.connect :"worker1@#{@host1}"
-    Node.connect :"worker2@#{@host1}"
-    Node.connect :"worker3@#{@host1}"
-  end
 
 end

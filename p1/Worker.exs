@@ -43,7 +43,7 @@ defmodule Worker do
         time_after = timestamp - time_before
         IO.puts "Cost in time... #{time_after}"  
     end
-    loop()
+    loopH()
   end
 
   def register1() do

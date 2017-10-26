@@ -16,7 +16,6 @@ defmodule Master do
   end
 
   def collect(results) do
-
     new_result = receive do
       {:resultado, result} -> IO.inspect "#{result}"
                               result
@@ -33,19 +32,62 @@ defmodule Master do
 
   def init(min, max) do
     #Divisón del rango en tres trozos
-    slice = div max,"#{@numWorkers}" 
+    slice = div max, 3 
     assign([{{:worker1, :"worker1@#{@host1}"}, {min, slice}},
             {{:worker2, :"worker2@#{@host1}"}, {slice + 1, slice * 2}},
             {{:worker3, :"worker3@#{@host1}"}, {slice * 2 + 1, max}}])
     collect([])
   end
-  
-  def initH(min, max) do
-    #Divisón del rango en tres trozos
-    slice = div max, 3
-    assign([{{:worker1, :"worker1@#{@host1}"}, {min, slice}},
-            {{:worker2, :"worker2@#{@host1}"}, {slice + 1, slice * 2}},
-            {{:worker3, :"worker3@#{@host1}"}, {slice * 2 + 1, max}}])
+
+
+end
+
+
+defmodule Heterogeneous do
+
+  @host1 "127.0.0.1"
+
+  def timestamp do
+    :os.system_time(:milli_seconds)  
+  end
+
+  def assign([worker_pid | workersTail],[task | taskTail], listWorkers) do
+    if (length(workersTail) == 0) do
+      #[worker_pid | workersTail ] = listWorkers 
+      #worker_pid = [listWorkers]
+    end  
+    send(worker_pid, {:calcular, {self(), task}}) 
+    if length(workersTail != 0) do 
+      assign(workersTail, taskTail,listWorkers)
+    end
+  end
+
+  def initH() do
+    task = [{1,9999}, {10000, 19999}, {20000, 29999},
+            {30000,39999}, {40000,49999}, {50000,59999}, 
+            {60000,69999}, {70000,79999}, {80000,89999}, 
+            {90000,100000} 
+           ] 
+    workers = ["worker1", "worker2", "worker3"]
+
+    assign(workers, task, workers)
+
     collect([])
   end  
+
+  def collect(results) do
+    new_result = receive do
+      {:resultado, result} -> IO.inspect "#{result}"
+                              result
+    end
+    IO.inspect "#{results}"
+    if length(results) < 2 do
+      IO.puts "vuelta...."
+      collect([results | new_result])
+    else
+      results = results ++ new_result
+      IO.inspect "#{results}"
+    end
+  end
+
 end

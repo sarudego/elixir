@@ -1,0 +1,16 @@
+arquitectura distribuida p2p, todos nodos iguales
+algoritmo rickart agrawala
+exclusion mutua para procesos
+como se ordenan los procesos
+cuantos procesos tiene el algoritmo original de agrawala? 3, que son... envio de mensajes, recepcion de mensajes, seccion critica
+
+hay variables compartidas
+
+como se implementan wait y signal en los nodos??
+
+dentro de un nodo(maquina), crear otro nodo con la pantalla de lectura de
+mensajes, y enviar con el metodo del send
+
+DIBUJAR arquitectura software y explicar
+
+

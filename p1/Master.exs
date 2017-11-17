@@ -68,6 +68,7 @@ defmodule Heter do
   defp assign(names, workers, task, pos) do
     if (pos != 11) do
       send({Enum.at(names,rem(pos+1,3)),Enum.at(workers,rem(pos+1,3))}, {:calcular, {self(), Enum.at(task,pos+1)}}) 
+      IO.puts "Enviado #{pos+1}, #{Enum.at(workers,rem(pos+1,3))}"
       pos = pos + 1
       assign(names, workers, task, pos)
     end
@@ -75,10 +76,10 @@ defmodule Heter do
   end
 
   def init() do
-    task = [{1,9999}, {10000, 19999}, {20000, 29999},
-            {30000,39999}, {40000,49999}, {50000,59999}, 
-            {60000,69999}, {70000,79999}, {80000,89999}, 
-            {90000,100000} 
+    task = [{1,24999}, {25000, 39999}, {40000, 52999},
+            {53000,64999}, {65000,70000}, {70001,74999}, 
+            {75000,81999}, {84000,89999}, {90000,94000}, 
+            {95000,100000} 
            ] 
     workers = [:"worker1@#{@host1}", :"worker2@#{@host1}", :"worker3@#{@host1}"]
     names = [:worker1, :worker2, :worker3]
@@ -89,18 +90,28 @@ defmodule Heter do
   defp collect(results,pos) do
     IO.puts "Estoy esperando..."
     new_result = receive do
-      #{:resultado, result} -> IO.puts "Recibido #{pos}"
-      {:resultado, result} -> IO.inspect "#{result}"
+      {:resultado, result} ->  result
+                               
+      #                        IO.inspect "#{result}"[0]
       #{:resultado, result} -> IO.puts List.to_string(result)
                               #result
     end
-    #IO.puts "vuelta... y otra vuelta #{pos}"
+    IO.puts "Recibido #{pos}"
+    first = List.first(new_result)
+    last = List.last(new_result)
+    IO.puts "#{first} to #{last}"
     if pos < 9 do
+      #IO.puts "entra en el IF"
       pos = pos + 1
       collect([results | new_result],pos)
     else
-      results = results ++ new_result
-      IO.inspect "#{results}"
+      #IO.puts "entra en el ELSE"
+      List.flatten(results, new_result)
+      #results = [results | new_result]
+      #results = List.flatten(results)
+      #list = List.to_string(results)
+      #IO.inspect "#{results}"
+
     end
   end
 

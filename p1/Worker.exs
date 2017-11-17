@@ -35,16 +35,16 @@ defmodule Worker do
   end
 
   def loopH do
-    IO.puts "Esperando trabajo..."
+    IO.puts "--> Esperando trabajo..."
     result = receive do
       {:calcular, {master_pid, {min, max}}} ->
         IO.puts "Calculando primos desde #{min} hasta #{max}."
         if :rand.uniform(100)>60, do: Process.sleep(round(:rand.uniform(100)/100*2000))
         time_before = timestamp()
-        IO.puts("Sending #{time_before}")
+        #IO.puts("Sending #{time_before}")
         send(master_pid, {:resultado, Primes.find_primes({min, max})})
         time_after = timestamp() - time_before
-        IO.puts "Cost in time... #{time_after}"  
+          IO.puts "Cost in time... #{time_after}"  
     end
     loopH()
   end

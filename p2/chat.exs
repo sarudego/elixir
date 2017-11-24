@@ -20,9 +20,7 @@ defmodule Chat do
   end
 
   defp connect() do
-    nodes = [:"node2@#{@host1}", :"node2@#{@host1}", :"node3@#{@host1}"]
-    #Node.connect :"node1@#{@host1}"
-    Enum.map(nodes, fn(x) -> if x != Node.self do Node.connect x end end) 
+    Node.connect :"node1@#{@host1}"
   end
 
   def participante(nombreRegistro) do

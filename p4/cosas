@@ -1,0 +1,6 @@
+si 1º latido llega al ser indenifido, se pone primario
+si ping con 0 es copia o emisor, se anota como caido
+  -- si es primario, pasa como vista
+
+
+

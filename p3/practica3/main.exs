@@ -10,8 +10,8 @@
 
 defmodule Fail do
 
-  Code.require_file("amigos.exs")
-  Code.require_file("worker.exs")
+  #Code.require_file("amigos.exs")
+  #Code.require_file("worker.exs")
 
   def timestamp do
     :os.system_time(:milli_seconds)  

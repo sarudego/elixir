@@ -12,11 +12,13 @@ defmodule NodoRemoto do
     @spec start(String.t, String.t, String.t, module) :: node
     def start(host, nombre, fichero_programa_cargar, modulo) do
         tiempo_antes = :os.system_time(:milli_seconds)
-        System.cmd("ssh", [host,
-                    "elixir --name #{nombre}@#{host} --cookie palabrasecreta",
-                    "--erl  \'-kernel inet_dist_listen_min 32000\'",
-                    "--erl  \'-kernel inet_dist_listen_max 32009\'",
-                    "--detached --no-halt #{fichero_programa_cargar}"])
+        #System.cmd("ssh", [host,
+                    #"elixir --name #{nombre}@#{host} --cookie palabrasecreta",
+                    #"--erl  \'-kernel inet_dist_listen_min 32000\'",
+                    #"--erl  \'-kernel inet_dist_listen_max 32009\'",
+                    #"--detached --no-halt #{fichero_programa_cargar}"])
+      System.cmd("iex", ["iex --name #{nombre}@#{host} --cookie palabrasecreta --erl '-kernel inet_dist_listen_min 32000' --erl '-kernel inet_dist_listen_max 32009' --detached --no-halt #{fichero_programa_cargar}"])
+    
 
         nodo = String.to_atom(nombre <> "@" <> host)
         comprobar_funciona(nodo, modulo)

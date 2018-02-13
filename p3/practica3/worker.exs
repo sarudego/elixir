@@ -1,6 +1,6 @@
 defmodule Worker do
 
-  Code.require_file("amigos.exs")
+  #Code.require_file("amigos.exs")
 
   def init do
     case :random.uniform(100) do
